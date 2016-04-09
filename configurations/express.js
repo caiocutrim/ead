@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const engine = require('ejs-mate');
 const load = require('express-load');
 
 module.exports = Setup;
@@ -11,10 +10,6 @@ function Setup() {
 
   let app = express();
 
-  // view engine setup
-  app.engine('ejs', engine);
-  app.set('views', `server/views`);
-  app.set('view engine', 'ejs');
 
   // uncomment after placing your favicon in /public
   //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
