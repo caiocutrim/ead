@@ -16,7 +16,6 @@ function Setup() {
   require('./middlewares')(app);
 
   load('models', {'cwd':'server'})
-   .then('services')
    .then('controllers')
    .then('events')
    .then('routes')
