@@ -17,6 +17,23 @@ describe('#SERVICE', () => {
     if (mongoose.connection.db) return done();
     mongoose.connect(config.dbURI, done);
   });
+  describe('when instanced', function(){
+    it('save should to be a function', () => {
+      service.save.saveModelData.should.to.be.a('function');
+    });
+    it('remove should to be a function', () => {
+      service.remove.removeDocument.should.to.be.a('function');
+    });
+    it('update should to be a function', () => {
+      service.update.updateDocument.should.to.be.a('function');
+    });
+    it('read should to be a function', () => {
+      service.read.readOneDocument.should.to.be.a('function');
+    });
+    it('read documents should to be a function', () => {
+      service.read.readDocuments.should.to.be.a('function');
+    });
+  });
   it('should save a model asynchronoulsy', done => {
     let save = service.save.saveModelData(User, mock);
     save.then(result => {
@@ -52,12 +69,17 @@ describe('#SERVICE', () => {
     save.then(result => {
       let read = service.read.readOneDocument(User, result);
       read.then(result => {
-        let update = service.update.updateDocument(User, result._id, {'username': 'jackdoe'});
+        let update = service.update.updateDocument(User, result._id, {
+          'username': 'jackdoe',
+          'password': '1234ssds5',
+          'email': 'jackdoe@example.com'
+        });
         update.then(result => {
           let ck = check(User, result._id);
           ck.then(result => {
-            console.log(`\t ${result.username}`);
             result.username.should.to.be.equal('jackdoe');
+            result.email.should.to.be.equal('jackdoe@example.com');
+            result.password.should.to.be.equal('1234ssds5');
             done();
           });
         });
@@ -65,4 +87,30 @@ describe('#SERVICE', () => {
     });
   });
 
+  it('should find a list of documents', done => {
+    let save = service.save.saveModelData(User, mock);
+    save.then(result => {
+      let read = service.read.readDocuments(User, result);
+      read.then(result => {
+        result.should.be.a('array');
+        result[0].username.should.to.be.equal('john doe');
+        result[0].password.should.to.be.equal('12345');
+        result[0].email.should.to.be.equal('johndoe@example.com');
+        done();
+      });
+    });
+  });
+
+  it('should return a error validate', done => {
+    let save = service.save.saveModelData(User,
+    {'username':'johndoe',
+      'email':'johnexample',
+      'password': 'lorem1345l'
+    });
+    save.catch(err => {
+      err.should.to.be.a('object');
+      err.message.should.to.be.equal('User validation failed');
+      done();
+    });
+  });
 });

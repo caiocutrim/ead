@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=production node ./bin/www",
-    "tests": "NODE_ENV=test mocha ./tests/models/*.js && NODE_ENV=test mocha ./tests/services/*.js",
+    "tests": "NODE_ENV=test istanbul cover _mocha ./tests/models/*.js && NODE_ENV=test istanbul cover _mocha ./tests/services/*.js",
     "dev": "NODE_ENV=development nodemon ./bin/www",
-    "global-dev-install": "npm i -g nodemon mocha browerify"
+    "global-dev-install": "sudo npm i -g nodemon mocha browerify istanbul watchify express-generator"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
