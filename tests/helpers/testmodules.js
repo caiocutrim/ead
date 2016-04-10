@@ -1,20 +1,11 @@
 'use strict';
 
 module.exports = modelReceived => {
-  let model = require(`../../server/models/${modelReceived}`)();
-  return model;
+  return require(`../../server/models/${modelReceived}`)();
 };
 
-exports.check = (modelReceived, done) => {
-  let model = modelReceived.findOne(model._id).exec();
-
-  model.then(response => {
-    if (response.body === null) {
-      console.log(`model not found, response iss ${response}`);
-      done();
-    } else {
-      console.log(`response is ${response.body}`);
-      done();
-    }
-  });
+module.exports.check = (modelReceived, _id) => {
+  let model = modelReceived.findOne(_id).exec();
+  return Promise.resolve(model.then(response => response ), model.catch(err => err));
 };
+
