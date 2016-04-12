@@ -5,12 +5,16 @@
  */
 
 'use strict';
+const passport = require('passport');
+const User = require('../server/models/user')();
 const app = require('../configurations/express')();
 const debug = require('debug')('blog:server');
 const config = require('../configurations/envs')();// environments configuration
 const http = require('http');
 const db = require('../configurations/databse')(config.dbURI); // database configuration
 
+
+passport.use(User.createStrategy());
 /**
  * Get port from environment and store in Express.
  */

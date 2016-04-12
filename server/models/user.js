@@ -1,5 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
+
 module.exports = () => {
   let schema = mongoose.Schema({
     "username": {
@@ -22,6 +24,12 @@ module.exports = () => {
       default: Date.now
     }
   });
-
-  return mongoose.model("User", schema);
+  schema.plugin(passportLocalMongoose, {
+    usernameLowerCase: true
+  });
+  try {
+    return mongoose.model('User');
+  }catch(err) {
+    return mongoose.model("User", schema);
+  }
 };

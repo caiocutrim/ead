@@ -3,10 +3,7 @@
 const express = require('express');
 const load = require('express-load');
 
-module.exports = Setup;
-
-function Setup() {
-
+module.exports = () => {
 
   let app = express();
 
@@ -15,8 +12,7 @@ function Setup() {
   //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
   require('./middlewares')(app);
 
-  load('models', {'cwd':'server'})
-   .then('services')
+  load('models', {'cwd':'./server'})
    .then('controllers')
    .then('routes')
    .into(app);
@@ -36,10 +32,7 @@ function Setup() {
   if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
       res.status(err.status || 500);
-      res.render('error', {
-        message: err.message,
-        error: err
-      });
+      res.json(err);
     });
   }
 
@@ -47,12 +40,9 @@ function Setup() {
   // no stacktraces leaked to user
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: {}
-    });
+    res.json(err);
   });
 
 
   return app;
-}
+};

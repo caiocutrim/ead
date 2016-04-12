@@ -10,8 +10,8 @@ const dbCLEAR = require('mocha-mongoose')(config.dbURI);
 // testing mock data and validation
 let mock = {
   'username': 'John Doe',
-  'password': '12345',
-  'email': 'johdoe@example.com'
+  'email': 'johdoe@example.com',
+  'password': '123455'
 };
 
 describe('#USER MODEL', () => {
@@ -21,14 +21,9 @@ describe('#USER MODEL', () => {
   });
 
   it('should save a document without errors', done => {
-    let user = User.create(mock);
-    user.then(result => {
-      expect(result.username).to.be.equal(mock.username);
-      expect(result.email).to.be.equal(mock.email);
-      done();
-    });
-    user.catch(err => {
-      console.log(err);
+    User.register(new User({'username':mock.username, 'email': mock.email}), mock.password, (err, account) => {
+      if (err) console.log(err);
+      console.log(account);
       done();
     });
   });
@@ -38,15 +33,13 @@ describe('#USER MODEL', () => {
     create.then(result => {
       let update = User.findByIdAndUpdate(result._id,
         {'username': 'Joane Doe',
-        'email':'joanedoe@example.com',
-        'password':'53120487',
+        'email':'joanedoe@example.com'
         }).exec();
       update.then(result => {
        let ck = check(User, result._id);
        ck.then(result => {
           expect(result.username).to.be.equal('Joane Doe');
           expect(result.email).to.be.equal('joanedoe@example.com');
-          expect(result.password).to.be.equal('53120487');
           done();
         });
       });
@@ -69,9 +62,8 @@ describe('#USER MODEL', () => {
     create.then(model => {
       check(User, model._id)
       .then(model => {
-        expect(model.username).to.be.equal(mock.username);
+        expect(model.username).to.be.equal('john doe');
         expect(model.email).to.be.equal(mock.email);
-        expect(model.password).to.be.equal(mock.password);
         done();
       });
     });
